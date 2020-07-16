@@ -168,7 +168,7 @@ d3.csv("data.csv").then(function(healthData, err) {
     
         //not working
     chartGroup.selectAll("text").exit()
-        .data(healthData)
+        .data(healthData)  
         .enter()
         .append("text")
         .attr("x", d => xLinearScale(d[chosenXAxis]))
