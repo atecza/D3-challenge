@@ -78,8 +78,18 @@ function renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, ch
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
     
+    
     return circlesGroup;
 
+}
+
+function renderCircleLabels(circlesLable, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis){
+    circlesLable.transition()
+        .duration(1000)
+        .attr("x", d => xLinearScale(d[chosenXAxis])-10)
+        .attr("y", d => yLinearScale(d[chosenYAxis])+5)
+    
+    return circlesLable;
 }
 
 
@@ -90,7 +100,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .attr("class", "tooltip")
         .offset([80, -60])
         .html(function(d) {
-            return (`X: ${d[chosenXAxis]}<br> Y: ${d[chosenYAxis]}`);
+            return (`${chosenXAxis}: ${d[chosenXAxis]}<br> ${chosenYAxis}: ${d[chosenYAxis]}`);
         });
   
     circlesGroup.call(toolTip);
@@ -160,19 +170,20 @@ d3.csv("data.csv").then(function(healthData, err) {
         .append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
-        .attr("r", 15)
-        .attr("fill", "blue")
+        .attr("r", 20)
+        .attr("fill", "lightblue")
+        .attr("stroke", "steelblue")
         .attr("opacity", ".5")
 
         console.log(circlesGroup)
     
-        //not working
-    chartGroup.selectAll("text").exit()
+        //create labels
+    var circlesLable = chartGroup.selectAll("text").exit()
         .data(healthData)  
         .enter()
         .append("text")
-        .attr("x", d => xLinearScale(d[chosenXAxis]))
-        .attr("y", d => yLinearScale(d[chosenYAxis]))
+        .attr("x", d => xLinearScale(d[chosenXAxis])-10)
+        .attr("y", d => yLinearScale(d[chosenYAxis])+5)
         .text(d => d.abbr)
         .attr("class","stateAbbr");
     
@@ -265,6 +276,8 @@ d3.csv("data.csv").then(function(healthData, err) {
             // updates circles with new x values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
 
+            circlesLable = renderCircleLabels(circlesLable, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+
             // updates tooltips with new info
             circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
@@ -329,6 +342,8 @@ d3.csv("data.csv").then(function(healthData, err) {
 
             // updates circles with new x values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+
+            circlesLable = renderCircleLabels(circlesLable, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
 
             // updates tooltips with new info
             circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
